@@ -9,6 +9,7 @@ import { Transition } from "@headlessui/react";
 import { AiOutlineBars } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
 import Logo from "../../assets/SocialEcho.png";
+import { HiOutlineHome, HiOutlineUserCircle } from "react-icons/hi2";
 
 const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
   const dispatch = useDispatch();
@@ -42,17 +43,27 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
   }, []);
 
   return (
-    <nav className="sticky top-0 z-20 mb-5 flex justify-center gap-10 border bg-white p-2 md:items-center md:justify-between md:px-36">
+    <nav className="sticky top-0 z-20 mb-5 flex justify-between items-center bg-white p-2 md:px-36">
+      {/* Logo (hidden on small screens) */}
       <Link to="/" className="hidden md:inline-block">
         <img className="w-36" src={Logo} alt="" />
       </Link>
 
-      <button className="inline-block md:hidden" onClick={toggleLeftbar}>
-        {showLeftbar ? <RxCross1 /> : <AiOutlineBars />}
-      </button>
+      {/* Left section: Home and Search */}
+      <div className="flex items-center gap-4">
+        <Link
+          to="/home"
+          className="flex items-center gap-2 text-lg font-medium hover:text-primary"
+        >
+          <HiOutlineHome className="text-xl" />
+          <span className="hidden md:inline">Home</span> {/* Text only on medium screens and above */}
+        </Link>
+        <div className="relative">
+          <Search className="w-40" /> {/* Search field reduced in size */}
+        </div>
+      </div>
 
-      <Search />
-
+      {/* Right section: Profile dropdown */}
       <div className="relative flex justify-end md:w-36">
         <button
           type="button"
@@ -92,14 +103,20 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
                   <div className="text-sm font-semibold text-gray-700 hover:underline">
                     <Link to={`/profile`}>{userData.name}</Link>
                   </div>
+                  
                   <div className="text-sm text-gray-500">{userData.email}</div>
+                  <Link to={`/profile`} className="text-sm text-blue-500 hover:underline">
+                    View Profile
+                  </Link>
                 </div>
+                
                 <hr className="my-2" />
-                <div className="flex justify-center">
+                <div className="flex items-center justify-around">
+                  {/* Profile and Logout button side by side */}
+                
                   <button
                     type="button"
-                    className="block w-full px-4 py-2  text-left text-sm text-red-400 hover:cursor-pointer hover:text-red-600"
-                    role="menuitem"
+                    className="text-sm text-red-400 hover:cursor-pointer hover:text-red-600"
                     onClick={logout}
                     disabled={loggingOut}
                   >

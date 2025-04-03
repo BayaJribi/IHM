@@ -4,7 +4,7 @@ import axios from "axios";
 import debounce from "lodash/debounce";
 import JoinModal from "../modals/JoinModal";
 import { MoonLoader } from "react-spinners";
-import { MdClear } from "react-icons/md";
+import { MdClear, MdSearch } from "react-icons/md"; // Import the MdSearch icon
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -89,10 +89,12 @@ const Search = () => {
           value={inputValue}
           onChange={handleInputChange}
           placeholder="Search for people, posts or communities"
-          className="h-10 py-1 bg-white border w-full md:w-[660px] rounded-full text-sm shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-500 transition duration-300 pl-3 pr-10"
+          className="h-10 py-1 bg-white border w-full md:w-[660px] rounded-full text-sm shadow-sm focus:outline-none focus:shadow-outline-blue focus:border-blue-500 transition duration-300 pl-10 pr-10" // Adjusted padding for the icon
           aria-label="Search"
           autoComplete="off"
         />
+        {/* Add the search icon */}
+        <MdSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
         {inputValue !== "" && (
           <button
             className="absolute top-0 right-0 h-full w-10 flex items-center justify-center text-gray-400 hover:text-gray-600"
@@ -261,3 +263,6 @@ const Search = () => {
 };
 
 export default Search;
+/*Import the MdSearch icon at the top of your component file.
+
+Add the search icon inside the input field container, just before the input element, so that it aligns correctly. */
