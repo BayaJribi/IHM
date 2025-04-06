@@ -8,14 +8,14 @@ import { IoLogOutOutline } from "react-icons/io5";
 import { Transition } from "@headlessui/react";
 import { AiOutlineBars } from "react-icons/ai";
 import { RxCross1 } from "react-icons/rx";
+import { BsMessenger } from "react-icons/bs";
+import { HiOutlineUserGroup, HiOutlineHome, HiOutlineUserCircle } from "react-icons/hi2";
 import Logo from "../../assets/SocialEcho.png";
-import { HiOutlineHome, HiOutlineUserCircle } from "react-icons/hi2";
 
 const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
   const dispatch = useDispatch();
   const [loggingOut, setLoggingOut] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-
   const dropdownRef = useRef(null);
 
   const handleProfileClick = () => {
@@ -43,10 +43,10 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
   }, []);
 
   return (
-    <nav className="sticky top-0 z-20 mb-5 flex justify-between items-center bg-white p-2 md:px-36">
+    <nav className="sticky top-0 z-20 mb-5 flex justify-between items-center bg-white p-2 md:px-36 shadow-sm">
       {/* Logo (hidden on small screens) */}
       <Link to="/" className="hidden md:inline-block">
-        <img className="w-36" src={Logo} alt="" />
+        <img className="w-36" src={Logo} alt="SocialEcho Logo" />
       </Link>
 
       {/* Left section: Home and Search */}
@@ -56,15 +56,26 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
           className="flex items-center gap-2 text-lg font-medium hover:text-primary"
         >
           <HiOutlineHome className="text-xl" />
-          <span className="hidden md:inline">Home</span> {/* Text only on medium screens and above */}
+          <span className="hidden md:inline">Home</span>
         </Link>
         <div className="relative">
-          <Search className="w-40" /> {/* Search field reduced in size */}
+          <Search className="w-40" />
         </div>
       </div>
 
-      {/* Right section: Profile dropdown */}
-      <div className="relative flex justify-end md:w-36">
+      {/* Right section: Messenger, Following, and Profile */}
+      <div className="relative flex items-center gap-4 justify-end">
+        {/* Messenger Icon */}
+        <Link to="/messenger" className="hover:text-primary text-xl">
+          <BsMessenger />
+        </Link>
+
+        {/* Following Icon */}
+        <Link to="/following" className="hover:text-primary text-xl">
+          <HiOutlineUserGroup />
+        </Link>
+
+        {/* Profile Avatar */}
         <button
           type="button"
           className="inline-flex h-8 w-8 cursor-pointer items-center justify-center rounded-full"
@@ -76,6 +87,8 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
             className="h-8 w-8 rounded-full object-cover"
           />
         </button>
+
+        {/* Profile Dropdown */}
         <Transition
           show={showDropdown}
           enter="transition ease-out duration-100 transform"
@@ -103,17 +116,14 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
                   <div className="text-sm font-semibold text-gray-700 hover:underline">
                     <Link to={`/profile`}>{userData.name}</Link>
                   </div>
-                  
                   <div className="text-sm text-gray-500">{userData.email}</div>
                   <Link to={`/profile`} className="text-sm text-blue-500 hover:underline">
                     View Profile
                   </Link>
                 </div>
-                
+
                 <hr className="my-2" />
                 <div className="flex items-center justify-around">
-                  {/* Profile and Logout button side by side */}
-                
                   <button
                     type="button"
                     className="text-sm text-red-400 hover:cursor-pointer hover:text-red-600"

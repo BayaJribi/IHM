@@ -12,8 +12,10 @@ const {
   removeModerator,
   getModerators,
 } = require("../controllers/admin.controller");
+const { deleteModerator } = require("../controllers/admin.controller");
 
 const requireAdminAuth = require("../middlewares/auth/adminAuth");
+
 const {
   configLimiter,
   logLimiter,

@@ -89,3 +89,14 @@ export const removeModerator = async (communityId, moderatorId) => {
     return handleApiError(error);
   }
 };
+export const deleteModerator = async (moderatorId) => {
+  try {
+    const response = await fetch(`/api/moderators/${moderatorId}`, {
+      method: "DELETE",
+    });
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    return { error: err.message };
+  }
+};

@@ -22,6 +22,10 @@ const SignUpNew = () => {
 
   const signUpError = useSelector((state) => state.auth?.signUpError);
 
+  const [isConsentGiven, setIsConsentGiven] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModerator, setIsModerator] = useState(false);
+
   const handleNameChange = (e) => {
     setName(e.target.value);
   };
@@ -63,12 +67,15 @@ const SignUpNew = () => {
     }
   };
 
-  const [isConsentGiven, setIsConsentGiven] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModerator, setIsModerator] = useState(false);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Vérification si l'email contient "mod.socialecho.com"
+    if (email.includes("mod.socialecho.com")) {
+      alert("You can't sign up as a moderator. Please contact us.");
+      return; // Annule l'inscription
+    }
+
     setLoading(true);
     setLoadingText("Signing up...");
     const formData = new FormData();
