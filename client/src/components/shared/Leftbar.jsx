@@ -40,11 +40,8 @@ const Leftbar = ({ showLeftbar }) => {
 
   // Links array for the navigation menu
   const navigationLinks = [
-    { href: "/home", label: "Home", icon: <HiOutlineHome className="text-xl" /> },
-    { href: "/profile", label: "Profile", icon: <HiOutlineUserCircle className="text-xl" /> },
+   
     { href: "/saved", label: "Saved", icon: <HiOutlineTag className="text-xl" /> },
-    { href: "/notifications", label: "Notifications", icon: <HiOutlineBell className="text-xl" /> },
-    { href: "/bookmarks", label: "Bookmarks", icon: <HiOutlineBookmark className="text-xl" /> },
   ];
 
   // Add following link if user has general role

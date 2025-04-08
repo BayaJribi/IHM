@@ -84,11 +84,7 @@ const Rightbar = () => {
 
   return (
     <div className="hidden md:block rightbar overflow-auto bg-white rounded-lg shadow-sm p-5">
-      {/* Current Time Display */}
-      <div className="mb-5 p-3 bg-gray-50 rounded-lg shadow-sm">
-        <h5 className="text-xs font-semibold text-gray-500 mb-1">CURRENT TIME</h5>
-        <CurrentTime />
-      </div>
+  
 
       {/* Communities Section */}
       {currentLocation !== "/communities" && (

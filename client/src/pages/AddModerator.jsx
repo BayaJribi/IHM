@@ -2,11 +2,11 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signUpAction, clearMessage } from "../redux/actions/authActions";
 import { RxCross1 } from "react-icons/rx";
+import { FiArrowLeft } from "react-icons/fi"; // Added arrow icon
 import ButtonLoadingSpinner from "../components/loader/ButtonLoadingSpinner";
-import Logo from "../assets/SocialEcho.png";
 import { useNavigate } from "react-router-dom";
 
-const AddModerator = () => {
+const AddModerator = ({ onBack }) => { // Added onBack prop
   const [loading, setLoading] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [name, setName] = useState("");
@@ -14,7 +14,7 @@ const AddModerator = () => {
   const [password, setPassword] = useState("");
   const [avatar, setAvatar] = useState(null);
   const [avatarError, setAvatarError] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(""); // State for success message
+  const [successMessage, setSuccessMessage] = useState("");
 
   const dispatch = useDispatch();
   const signUpError = useSelector((state) => state.auth?.signUpError);
@@ -64,15 +64,14 @@ const AddModerator = () => {
 
     try {
       await dispatch(signUpAction(formData));
-
-      // Set success message
       setSuccessMessage("Moderator account created successfully!");
-
-      // After a brief pause, navigate to /admin page
       setTimeout(() => {
-        navigate("/admin");
-      }, 2000); // Delay navigation to show success message
-
+        if (onBack) {
+          onBack(); // Use the callback if provided
+        } else {
+          navigate("/admin"); // Fallback to navigation
+        }
+      }, 2000);
     } catch (error) {
       console.error("Error creating moderator:", error);
     }
@@ -82,96 +81,139 @@ const AddModerator = () => {
   };
 
   return (
-    <section className="bg-white">
-      <div className="container mx-auto flex min-h-screen items-center justify-center px-6">
-        <form className="w-full max-w-md" onSubmit={handleSubmit}>
-          <div className="mx-auto flex justify-center">
-            <img className="h-8 w-auto" src={Logo} alt="Logo" />
-          </div>
-
-          {signUpError &&
-            Array.isArray(signUpError) &&
-            signUpError.map((err, i) => (
-              <div
-                className="mt-6 flex items-center rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700"
-                role="alert"
-                key={i}
-              >
-                <span className="ml-2 block sm:inline">{err}</span>
-                <button
-                  className="ml-auto font-bold text-red-700"
-                  onClick={() => dispatch(clearMessage())}
-                >
-                  <RxCross1 className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-
-          {successMessage && (
-            <div
-              className="mt-6 flex items-center rounded border border-green-400 bg-green-100 px-4 py-3 text-green-700"
-              role="alert"
+    <section className="bg-gray-50 py-6">
+      <div className="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+        <div className="rounded-lg bg-white p-8 shadow-md">
+          <div className="mb-6 flex items-center">
+            {/* Back button */}
+            <button
+              onClick={onBack}
+              className="flex items-center text-gray-600 hover:text-blue-600 mr-4 transition-colors"
+              title="Back to moderators list"
             >
-              <span className="ml-2 block sm:inline">{successMessage}</span>
-            </div>
-          )}
+              <FiArrowLeft className="h-5 w-5" />
+            </button>
+            <h2 className="text-2xl font-bold text-gray-800">Add New Moderator</h2>
+          </div>
+          
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {signUpError &&
+              Array.isArray(signUpError) &&
+              signUpError.map((err, i) => (
+                <div
+                  className="flex items-center rounded border border-red-400 bg-red-50 px-4 py-3 text-red-700"
+                  role="alert"
+                  key={i}
+                >
+                  <span className="block text-sm">{err}</span>
+                  <button
+                    className="ml-auto font-bold text-red-700"
+                    onClick={() => dispatch(clearMessage())}
+                  >
+                    <RxCross1 className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
 
-          <input
-            type="text"
-            placeholder="Moderator name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="mt-6 w-full rounded-lg border px-4 py-3 text-gray-700"
-            required
-          />
-
-          <input
-            type="email"
-            placeholder="Moderator email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mt-4 w-full rounded-lg border px-4 py-3 text-gray-700"
-            required
-          />
-
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="mt-4 w-full rounded-lg border px-4 py-3 text-gray-700"
-            required
-          />
-
-          <label className="mt-4 flex cursor-pointer items-center justify-center rounded-lg border-2 border-dashed px-4 py-3 text-center text-gray-400">
-            <span>Upload Avatar</span>
-            <input
-              type="file"
-              className="hidden"
-              accept="image/*"
-              onChange={handleAvatarChange}
-            />
-          </label>
-
-          {avatar && (
-            <div className="mt-2 text-sm text-blue-500">{avatar.name}</div>
-          )}
-          {avatarError && (
-            <div className="mt-2 text-sm text-red-500">{avatarError}</div>
-          )}
-
-          <button
-            disabled={loading}
-            type="submit"
-            className={`mt-6 w-full rounded-lg bg-blue-500 px-4 py-3 text-white hover:bg-blue-700 ${loading ? "cursor-not-allowed opacity-50" : ""}`}
-          >
-            {loading ? (
-              <ButtonLoadingSpinner loadingText={loadingText} />
-            ) : (
-              "Create Moderator"
+            {successMessage && (
+              <div
+                className="flex items-center rounded border border-green-400 bg-green-50 px-4 py-3 text-green-700"
+                role="alert"
+              >
+                <span className="block text-sm">{successMessage}</span>
+              </div>
             )}
-          </button>
-        </form>
+
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="name" className="mb-1 block text-sm font-medium text-gray-700">
+                  Moderator Name
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  placeholder="Enter full name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="mb-1 block text-sm font-medium text-gray-700">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  placeholder="Enter email address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label htmlFor="password" className="mb-1 block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  placeholder="Set a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full rounded-md border border-gray-300 px-3 py-2 text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="mb-1 block text-sm font-medium text-gray-700">
+                  Profile Picture (Optional)
+                </label>
+                <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 px-4 py-6 transition-colors hover:border-blue-400 hover:bg-blue-50">
+                  <span className="text-sm text-gray-500">
+                    {avatar ? avatar.name : "Click to upload or drag and drop"}
+                  </span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleAvatarChange}
+                  />
+                </label>
+                {avatarError && (
+                  <p className="mt-1 text-sm text-red-500">{avatarError}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex space-x-4">
+              <button
+                type="button"
+                onClick={onBack}
+                className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors"
+              >
+                Cancel
+              </button>
+              
+              <button
+                disabled={loading}
+                type="submit"
+                className={`flex-1 rounded-md bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${loading ? "cursor-not-allowed opacity-70" : ""}`}
+              >
+                {loading ? (
+                  <ButtonLoadingSpinner loadingText={loadingText} />
+                ) : (
+                  "Create Moderator Account"
+                )}
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
     </section>
   );

@@ -37,20 +37,7 @@ const Tab = ({ activeTab, handleTabClick }) => {
             Logs
           </span>
         </li>
-        <li className="mr-2 flex items-center">
-          <span
-            className={`cursor-pointer inline-flex items-center px-2 py-2 border-b-2 rounded-t-lg ${
-              activeTab === "settings"
-                ? "border-blue-500 bg-primary rounded-md text-white"
-                : "border-transparent hover:text-gray-600 hover:border-gray-300"
-            }`}
-            onClick={() => handleTabClick("settings")}
-          >
-            <IoSettingsOutline className="mr-1" />
-            Settings
-          </span>
-        </li>
-        
+   
         <li className="mr-2 flex items-center">
           <span
             className={`cursor-pointer inline-flex items-center px-2 py-2 border-b-2 rounded-t-lg ${
@@ -81,19 +68,7 @@ const Tab = ({ activeTab, handleTabClick }) => {
 
 
 
-        <li className="mr-2 flex items-center">
-          <span
-            className={`cursor-pointer inline-flex items-center px-2 py-2 border-b-2 rounded-t-lg ${
-              activeTab === "moderatorsadd"
-                ? "border-blue-500 bg-primary rounded-md text-white"
-                : "border-transparent hover:text-gray-600 hover:border-gray-300"
-            }`}
-            onClick={() => handleTabClick("moderatorsadd")}
-          >
-            <FaUserShield className="mr-1" />
-add moderators          </span>
-        </li>
-
+       
 
 
 

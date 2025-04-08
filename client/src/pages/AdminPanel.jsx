@@ -32,10 +32,8 @@ const AdminPanel = () => {
       <Tab activeTab={activeTab} handleTabClick={handleTabClick} />
 
       {activeTab === "logs" && <Logs />}
-      {activeTab === "settings" && <Settings />}
       {activeTab === "Community Management" && <CommunityManagement />}
       {activeTab === "moderators" && <ModeratorsList />}
-      {activeTab === "moderatorsadd" && <AddModerator />}
 
     </div>
   );

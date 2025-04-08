@@ -12,6 +12,7 @@ import { BsMessenger } from "react-icons/bs";
 import { HiOutlineUserGroup, HiOutlineHome, HiOutlineUserCircle } from "react-icons/hi2";
 import Logo from "../../assets/SocialEcho.png";
 import CurrentTime from "./CurrentTime"; // Import the CurrentTime component
+import { BiBell, BiLogoMessenger } from "react-icons/bi";
 
 const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
   const dispatch = useDispatch();
@@ -88,7 +89,7 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
             className="hover:text-primary text-xl transition-colors relative"
             aria-label="Messages"
           >
-            <BsMessenger />
+            <BiLogoMessenger />
             <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
               3
             </span>
@@ -96,11 +97,11 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
 
           {/* Following Icon */}
           <Link 
-            to="/following" 
+            to="/notification" 
             className="hover:text-primary text-xl transition-colors"
-            aria-label="Following"
+            aria-label="notification"
           >
-            <HiOutlineUserGroup />
+            <BiBell />
           </Link>
 
           {/* Profile Avatar */}
