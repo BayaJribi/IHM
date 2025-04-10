@@ -13,6 +13,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import FallbackLoading from "./components/loader/FallbackLoading";
 import { publicRoutes, privateRoutes } from "./routes";
 import ModeratePost from "./pages/ModeratePost";
+import ChatPage from "./pages/ChatPage";
 
 
 import PrivateRoute from "./PrivateRoute";
@@ -36,6 +37,18 @@ const App = () => {
             <Route key={route.path} path={route.path} element={route.element} />
           ))}
         </Route>
+
+
+
+{/* ✅ ROUTE PERSONNALISÉE POUR LA MESSAGERIE */}
+  <Route
+          path="/chat"
+          element={userData ? <ChatPage /> : <Navigate to="/signin" />}
+        />
+
+
+
+
 
         {publicRoutes.map((route) => (
           <Route key={route.path} path={route.path} element={route.element} />

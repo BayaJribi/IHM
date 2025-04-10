@@ -17,6 +17,9 @@ const contextAuthRoutes = require("./routes/context-auth.route");
 const search = require("./controllers/search.controller");
 const Database = require("./config/database");
 const decodeToken = require("./middlewares/auth/decodeToken");
+const messageRoutes = require("./routes/message.routes");
+const conversationRoutes = require("./routes/conversation.routes");
+
 
 
 const app = express();
@@ -57,10 +60,14 @@ app.get("/search", decodeToken, search);
 
 app.use("/auth", contextAuthRoutes);
 app.use("/users", userRoutes);
+app.use("/api/users", userRoutes);
 app.use("/posts", postRoutes);
 app.use("/communities", communityRoutes);
 app.use("/admin", adminRoutes);
 //
+app.use("/api/messages", messageRoutes);
+app.use("/api/conversations", conversationRoutes);
+
 //app.use("/api/notifications", require("./routes/notification.routes"));
 app.use("/notifications", require("./routes/notification.routes"));
 
