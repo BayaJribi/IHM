@@ -71,6 +71,9 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+//
+communities: [{ type: mongoose.Schema.Types.ObjectId, ref: "Community" }],
 
+//
 userSchema.index({ name: "text" });
 module.exports = mongoose.model("User", userSchema);

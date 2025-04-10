@@ -18,6 +18,7 @@ const search = require("./controllers/search.controller");
 const Database = require("./config/database");
 const decodeToken = require("./middlewares/auth/decodeToken");
 
+
 const app = express();
 
 const cors = require("cors");
@@ -59,7 +60,17 @@ app.use("/users", userRoutes);
 app.use("/posts", postRoutes);
 app.use("/communities", communityRoutes);
 app.use("/admin", adminRoutes);
+//
+//app.use("/api/notifications", require("./routes/notification.routes"));
+app.use("/notifications", require("./routes/notification.routes"));
 
+
+//const moderatorRoutes = require("./routes/moderator.route");
+
+
+
+
+//
 process.on("SIGINT", async () => {
   try {
     await db.disconnect();

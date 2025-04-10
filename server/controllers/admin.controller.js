@@ -8,6 +8,8 @@ const AdminToken = require("../models/token.admin.model");
 const Config = require("../models/config.model");
 const Community = require("../models/community.model");
 const User = require("../models/user.model");
+const Post = require("../models/post.model"); // ⬅️ à ajouter
+
 
 /**
  * @route GET /admin/logs

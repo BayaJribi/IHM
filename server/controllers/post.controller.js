@@ -10,122 +10,79 @@ const User = require("../models/user.model");
 const Relationship = require("../models/relationship.model");
 const Report = require("../models/report.model");
 const PendingPost = require("../models/pendingPost.model");
+const Notification = require("../models/notification.model");
+
 const fs = require("fs");
 
 const createPost = async (req, res) => {
   try {
     const { communityId, content } = req.body;
-    const { userId, file, fileUrl, fileType } = req;
+    const { userId, fileUrl, fileType } = req;
 
-    const community = await Community.findOne({
-      _id: { $eq: communityId },
-      members: { $eq: userId },
-    });
-
-    if (!community) {
-      if (file) {
-        const filePath = `./assets/userFiles/${file.filename}`;
-        fs.unlink(filePath, (err) => {
-          if (err) {
-            console.error(err);
-          }
-        });
-      }
-
-      return res.status(401).json({
-        message: "Unauthorized to post in this community",
-      });
-    }
+    const community = await Community.findOne({ _id: communityId, members: userId });
+    if (!community) return res.status(401).json({ message: "Unauthorized" });
 
     const newPost = new Post({
       user: userId,
       community: communityId,
       content,
-      fileUrl: fileUrl ? fileUrl : null,
-      fileType: fileType ? fileType : null,
+      fileUrl: fileUrl || null,
+      fileType: fileType || null,
+      status: "pending",
     });
 
     const savedPost = await newPost.save();
-    const postId = savedPost._id;
+    const communityWithModerators = await Community.findById(communityId).populate("moderators");
+    const moderators = communityWithModerators?.moderators || [];
 
-    const post = await Post.findById(postId)
-      .populate("user", "name avatar")
-      .populate("community", "name")
-      .lean();
+    if (moderators.length === 0) return res.status(400).json({ message: "Aucun modérateur trouvé" });
 
-    post.createdAt = dayjs(post.createdAt).fromNow();
+    await Promise.all(moderators.map((mod) => User.findByIdAndUpdate(mod._id, { $addToSet: { communities: communityId } })));
+    await Promise.all(moderators.map((mod) => Notification.create({
+      recipient: mod._id,
+      post: savedPost._id,
+      community: communityId,
+      type: "pending_post",
+      isRead: false,
+    })));
 
-    res.json(post);
+    res.status(201).json(savedPost);
   } catch (error) {
-    res.status(500).json({
-      message: "Error creating post",
-    });
+    console.error("Error creating post:", error);
+    res.status(500).json({ message: "Error creating post" });
   }
 };
 
 const confirmPost = async (req, res) => {
   try {
     const { confirmationToken } = req.params;
-    const userId = req.userId;
-    const pendingPost = await PendingPost.findOne({
-      confirmationToken: { $eq: confirmationToken },
-      status: "pending",
-      user: userId,
-    });
-    if (!pendingPost) {
-      return res.status(404).json({ message: "Post not found" });
-    }
+    const pendingPost = await PendingPost.findOne({ confirmationToken, status: "pending" });
+    if (!pendingPost) return res.status(404).json({ message: "Post not found" });
 
     const { user, community, content, fileUrl, fileType } = pendingPost;
-    const newPost = new Post({
-      user,
-      community,
-      content,
-      fileUrl,
-      fileType,
-    });
+    const approvedPost = new Post({ user, community, content, fileUrl, fileType, status: "approved" });
 
-    await PendingPost.findOneAndDelete({
-      confirmationToken: { $eq: confirmationToken },
-    });
-    const savedPost = await newPost.save();
-    const postId = savedPost._id;
+    await PendingPost.findByIdAndDelete(pendingPost._id);
+    const savedPost = await approvedPost.save();
 
-    const post = await Post.findById(postId)
-      .populate("user", "name avatar")
-      .populate("community", "name")
-      .lean();
-
+    const post = await Post.findById(savedPost._id).populate("user", "name avatar").populate("community", "name").lean();
     post.createdAt = dayjs(post.createdAt).fromNow();
-
     res.json(post);
   } catch (error) {
-    res.status(500).json({
-      message: "Error publishing post",
-    });
+    res.status(500).json({ message: "Error confirming post" });
   }
 };
 
 const rejectPost = async (req, res) => {
   try {
     const { confirmationToken } = req.params;
-    const userId = req.userId;
-    const pendingPost = await PendingPost.findOne({
-      confirmationToken: { $eq: confirmationToken },
-      status: "pending",
-      user: userId,
-    });
+    const pendingPost = await PendingPost.findOne({ confirmationToken, status: "pending" });
+    if (!pendingPost) return res.status(404).json({ message: "Post not found" });
 
-    if (!pendingPost) {
-      return res.status(404).json({ message: "Post not found" });
-    }
-
-    await pendingPost.remove();
-    res.status(201).json({ message: "Post rejected" });
+    await PendingPost.findByIdAndDelete(pendingPost._id);
+    res.status(200).json({ message: "Post rejected" });
   } catch (error) {
-    res.status(500).json({
-      message: "Error rejecting post",
-    });
+    res.status(500).json({ message: "Error rejecting post" });
   }
 };
 
@@ -134,7 +91,7 @@ const clearPendingPosts = async (req, res) => {
     const user = await User.findById(req.userId);
     if (user.role !== "moderator") {
       return res.status(401).json({ message: "Unauthorized" });
-    }
+    } 
 
     const date = new Date();
     date.setHours(date.getHours() - 1);
@@ -156,6 +113,13 @@ const getPost = async (req, res) => {
     const post = await findPostById(postId);
     if (!post) {
       return res.status(404).json({ message: "Post not found" });
+    }
+
+    const user = await User.findById(userId);
+
+    // 🚨 Bloquer l'accès si le post est en attente et l'utilisateur n'est pas modérateur
+    if (post.status === "pending" && user.role !== "moderator") {
+      return res.status(403).json({ message: "Ce post est en attente de validation." });
     }
 
     const comments = await findCommentsByPostId(postId);
@@ -205,47 +169,24 @@ const getPosts = async (req, res) => {
     const userId = req.userId;
     const { limit = 10, skip = 0 } = req.query;
 
-    const communities = await Community.find({
-      members: userId,
-    });
-
-    const communityIds = communities.map((community) => community._id);
-
-    const posts = await Post.find({
-      community: {
-        $in: communityIds,
-      },
-    })
-      .sort({
-        createdAt: -1,
-      })
+    const communityIds = await Community.find({ members: userId }).distinct("_id");
+    const posts = await Post.find({ community: { $in: communityIds }, status: "approved" })
+      .sort({ createdAt: -1 })
+      .skip(Number(skip))
+      .limit(Number(limit))
       .populate("user", "name avatar")
       .populate("community", "name")
-      .skip(parseInt(skip))
-      .limit(parseInt(limit))
       .lean();
 
-    const formattedPosts = posts.map((post) => ({
-      ...post,
-      createdAt: dayjs(post.createdAt).fromNow(),
-    }));
+    const formattedPosts = posts.map((post) => ({ ...post, createdAt: dayjs(post.createdAt).fromNow() }));
+    const totalPosts = await Post.countDocuments({ community: { $in: communityIds }, status: "approved" });
 
-    const totalPosts = await Post.countDocuments({
-      community: {
-        $in: communityIds,
-      },
-    });
-
-    res.status(200).json({
-      formattedPosts,
-      totalPosts,
-    });
+    res.status(200).json({ formattedPosts, totalPosts });
   } catch (error) {
-    res.status(500).json({
-      message: "Error retrieving posts",
-    });
+    res.status(500).json({ message: "Error retrieving posts" });
   }
 };
+
 
 /**
  * Retrieves the posts for a given community, including the post information, the number of posts saved by each user,
@@ -257,51 +198,28 @@ const getCommunityPosts = async (req, res) => {
   try {
     const communityId = req.params.communityId;
     const userId = req.userId;
-
     const { limit = 10, skip = 0 } = req.query;
 
-    const isMember = await Community.findOne({
-      _id: communityId,
-      members: userId,
-    });
+    const isMember = await Community.exists({ _id: communityId, members: userId });
+    if (!isMember) return res.status(401).json({ message: "Unauthorized" });
 
-    if (!isMember) {
-      return res.status(401).json({
-        message: "Unauthorized to view posts in this community",
-      });
-    }
-
-    const posts = await Post.find({
-      community: communityId,
-    })
-      .sort({
-        createdAt: -1,
-      })
+    const posts = await Post.find({ community: communityId, status: "approved" })
+      .sort({ createdAt: -1 })
+      .skip(Number(skip))
+      .limit(Number(limit))
       .populate("user", "name avatar")
       .populate("community", "name")
-      .skip(parseInt(skip))
-      .limit(parseInt(limit))
       .lean();
 
-    const formattedPosts = posts.map((post) => ({
-      ...post,
-      createdAt: dayjs(post.createdAt).fromNow(),
-    }));
+    const formattedPosts = posts.map((post) => ({ ...post, createdAt: dayjs(post.createdAt).fromNow() }));
+    const totalCommunityPosts = await Post.countDocuments({ community: communityId, status: "approved" });
 
-    const totalCommunityPosts = await Post.countDocuments({
-      community: communityId,
-    });
-
-    res.status(200).json({
-      formattedPosts,
-      totalCommunityPosts,
-    });
+    res.status(200).json({ formattedPosts, totalCommunityPosts });
   } catch (error) {
-    res.status(500).json({
-      message: "Error retrieving posts",
-    });
+    res.status(500).json({ message: "Error retrieving posts" });
   }
 };
+
 
 /**
  * Retrieves the posts of the users that the current user is following in a given community
@@ -644,6 +562,7 @@ const getPublicPosts = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+////////
 
 module.exports = {
   getPost,
@@ -663,3 +582,4 @@ module.exports = {
   getPublicPosts,
   getFollowingUsersPosts,
 };
+

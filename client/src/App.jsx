@@ -12,6 +12,8 @@ import { useSelector } from "react-redux";
 import { Routes, Route, Navigate } from "react-router-dom";
 import FallbackLoading from "./components/loader/FallbackLoading";
 import { publicRoutes, privateRoutes } from "./routes";
+import ModeratePost from "./pages/ModeratePost";
+
 
 import PrivateRoute from "./PrivateRoute";
 import SignIn from "./pages/SignIn";
@@ -56,7 +58,11 @@ const App = () => {
             adminAccessToken ? <AdminPanel /> : <Navigate to="/admin/signin" />
           }
         />
+        <Route path="/moderate/:id" element={<ModeratePost />} />
+
       </Routes>
+      
+
     </Suspense>
   );
 };

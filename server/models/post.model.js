@@ -11,6 +11,13 @@ const postSchema = new Schema(
       type: String,
       trim: true,
     },
+    ///ajouter par moi 
+    status: {
+      type: String,
+      enum: ['pending', 'approved', 'rejected'],
+      default: 'pending'
+    },
+    ///ajouter
     fileUrl: {
       type: String,
       trim: true,

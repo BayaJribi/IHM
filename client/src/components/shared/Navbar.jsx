@@ -6,12 +6,11 @@ import { memo } from "react";
 import { logoutAction } from "../../redux/actions/authActions";
 import { IoLogOutOutline } from "react-icons/io5";
 import { Transition } from "@headlessui/react";
-import { AiOutlineBars } from "react-icons/ai";
-import { RxCross1 } from "react-icons/rx";
+import { HiOutlineHome } from "react-icons/hi2";
 import Logo from "../../assets/SocialEcho.png";
-import { HiOutlineHome, HiOutlineUserCircle } from "react-icons/hi2";
+import NotificationDropdown from "./NotificationDropdown"; // Si le fichier est bien dans shared/
 
-const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
+const Navbar = ({ userData }) => {
   const dispatch = useDispatch();
   const [loggingOut, setLoggingOut] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -36,7 +35,6 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
     };
 
     document.addEventListener("click", handleOutsideClick);
-
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
@@ -44,26 +42,30 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
 
   return (
     <nav className="sticky top-0 z-20 mb-5 flex justify-between items-center bg-white p-2 md:px-36">
-      {/* Logo (hidden on small screens) */}
+      {/* Logo */}
       <Link to="/" className="hidden md:inline-block">
-        <img className="w-36" src={Logo} alt="" />
+        <img className="w-36" src={Logo} alt="Logo" />
       </Link>
 
-      {/* Left section: Home and Search */}
+      {/* 🔍 Search + 🏠 Home + 🔔 Notification */}
       <div className="flex items-center gap-4">
         <Link
           to="/home"
           className="flex items-center gap-2 text-lg font-medium hover:text-primary"
         >
           <HiOutlineHome className="text-xl" />
-          <span className="hidden md:inline">Home</span> {/* Text only on medium screens and above */}
+          <span className="hidden md:inline">Home</span>
         </Link>
-        <div className="relative">
-          <Search className="w-40" /> {/* Search field reduced in size */}
-        </div>
+
+        <Search className="w-40" />
+
+        {/* 🔔 Notification visible uniquement pour les modérateurs */}
+        {userData?.role === "moderator" && (
+          <NotificationDropdown userId={userData._id} />
+        )}
       </div>
 
-      {/* Right section: Profile dropdown */}
+      {/* 👤 Profile Dropdown */}
       <div className="relative flex justify-end md:w-36">
         <button
           type="button"
@@ -76,6 +78,7 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
             className="h-8 w-8 rounded-full object-cover"
           />
         </button>
+
         <Transition
           show={showDropdown}
           enter="transition ease-out duration-100 transform"
@@ -89,11 +92,8 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
             <div
               ref={dropdownRef}
               className="absolute right-0 top-10 mt-2 w-72 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-              role="menu"
-              aria-orientation="vertical"
-              aria-labelledby="user-menu"
             >
-              <div className="py-1" role="none">
+              <div className="py-1">
                 <div className="flex flex-col items-center">
                   <img
                     src={userData.avatar}
@@ -103,20 +103,21 @@ const Navbar = ({ userData, toggleLeftbar, showLeftbar }) => {
                   <div className="text-sm font-semibold text-gray-700 hover:underline">
                     <Link to={`/profile`}>{userData.name}</Link>
                   </div>
-                  
                   <div className="text-sm text-gray-500">{userData.email}</div>
-                  <Link to={`/profile`} className="text-sm text-blue-500 hover:underline">
+                  <Link
+                    to={`/profile`}
+                    className="text-sm text-blue-500 hover:underline"
+                  >
                     View Profile
                   </Link>
                 </div>
-                
+
                 <hr className="my-2" />
+
                 <div className="flex items-center justify-around">
-                  {/* Profile and Logout button side by side */}
-                
                   <button
                     type="button"
-                    className="text-sm text-red-400 hover:cursor-pointer hover:text-red-600"
+                    className="text-sm text-red-400 hover:text-red-600"
                     onClick={logout}
                     disabled={loggingOut}
                   >
