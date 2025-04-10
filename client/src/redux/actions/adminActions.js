@@ -189,3 +189,24 @@ export const removeModeratorAction =
       });
     }
   };
+  export const deleteModeratorAction = (moderatorId) => async (dispatch) => {
+    try {
+      const { error } = await api.deleteModerator(moderatorId);
+      if (error) {
+        throw new Error(error);
+      }
+      dispatch({
+        type: types.DELETE_MODERATOR_SUCCESS,
+        payload: moderatorId,
+      });
+  
+      // Optional: re-fetch the updated list
+      dispatch(getModeratorsAction());
+    } catch (error) {
+      dispatch({
+        type: types.DELETE_MODERATOR_FAIL,
+        payload: error.message,
+      });
+    }
+  };
+  

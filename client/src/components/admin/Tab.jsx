@@ -6,6 +6,7 @@ import ButtonLoadingSpinner from "../loader/ButtonLoadingSpinner";
 import { BiLogOut } from "react-icons/bi";
 import { BsPeople, BsWindowStack } from "react-icons/bs";
 import { IoSettingsOutline } from "react-icons/io5";
+import { FaUserShield } from "react-icons/fa"; // Import an icon for moderators
 
 const Tab = ({ activeTab, handleTabClick }) => {
   const navigate = useNavigate();
@@ -36,19 +37,7 @@ const Tab = ({ activeTab, handleTabClick }) => {
             Logs
           </span>
         </li>
-        <li className="mr-2 flex items-center">
-          <span
-            className={`cursor-pointer inline-flex items-center px-2 py-2 border-b-2 rounded-t-lg ${
-              activeTab === "settings"
-                ? "border-blue-500 bg-primary rounded-md text-white"
-                : "border-transparent hover:text-gray-600 hover:border-gray-300"
-            }`}
-            onClick={() => handleTabClick("settings")}
-          >
-            <IoSettingsOutline className="mr-1" />
-            Settings
-          </span>
-        </li>
+   
         <li className="mr-2 flex items-center">
           <span
             className={`cursor-pointer inline-flex items-center px-2 py-2 border-b-2 rounded-t-lg ${
@@ -62,6 +51,30 @@ const Tab = ({ activeTab, handleTabClick }) => {
             Community Management
           </span>
         </li>
+        <li className="mr-2 flex items-center">
+          <span
+            className={`cursor-pointer inline-flex items-center px-2 py-2 border-b-2 rounded-t-lg ${
+              activeTab === "moderators"
+                ? "border-blue-500 bg-primary rounded-md text-white"
+                : "border-transparent hover:text-gray-600 hover:border-gray-300"
+            }`}
+            onClick={() => handleTabClick("moderators")}
+          >
+            <FaUserShield className="mr-1" />
+            Moderators List
+          </span>
+        </li>
+
+
+
+
+       
+
+
+
+
+
+        
         <li className="mr-2 flex items-center">
           <span
             className={`cursor-pointer inline-flex items-center px-2 py-2 border-b-2 rounded-t-md ${

@@ -17,6 +17,7 @@ import ModeratePost from "./pages/ModeratePost";
 
 import PrivateRoute from "./PrivateRoute";
 import SignIn from "./pages/SignIn";
+import AddModerator from "./pages/AddModerator";
 
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 const AdminSignIn = lazy(() => import("./pages/AdminSignIn"));
@@ -44,6 +45,7 @@ const App = () => {
           path="/signin"
           element={userData ? <Navigate to="/" /> : <SignIn />}
         />
+<Route path="/admin/add-moderator" element={<AddModerator />} />
 
         <Route
           path="/admin/signin"

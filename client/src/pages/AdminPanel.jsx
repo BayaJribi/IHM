@@ -6,6 +6,9 @@ import CommunityManagement from "../components/admin/CommunityManagement";
 import { useSelector, useDispatch } from "react-redux";
 import { logoutAction } from "../redux/actions/adminActions";
 import { useNavigate } from "react-router-dom";
+import ModeratorsList from "../components/admin/ModeratorsList";
+import SignUpNew from "./SignUp";
+import AddModerator from "./AddModerator";
 const AdminPanel = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -29,8 +32,9 @@ const AdminPanel = () => {
       <Tab activeTab={activeTab} handleTabClick={handleTabClick} />
 
       {activeTab === "logs" && <Logs />}
-      {activeTab === "settings" && <Settings />}
       {activeTab === "Community Management" && <CommunityManagement />}
+      {activeTab === "moderators" && <ModeratorsList />}
+
     </div>
   );
 };
