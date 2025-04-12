@@ -1,8 +1,21 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
 
-const messageSchema = new mongoose.Schema({
+const reactionSchema = new Schema({
+  userId: {
+    type: Schema.Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
+  emoji: {
+    type: String,
+    required: true
+  }
+}, { _id: false });
+
+const messageSchema = new Schema({
   sender: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true
   },
@@ -11,20 +24,19 @@ const messageSchema = new mongoose.Schema({
     required: true
   },
   conversationId: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'Conversation',
     required: true
   },
   timestamp: {
     type: Date,
     default: Date.now
-  }
+  },
+  isRead: {
+    type: Boolean,
+    default: false
+  },
+  reactions: [reactionSchema]
 });
-
-reactions: [{
-    userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    emoji: String
-  }]
-  
 
 module.exports = mongoose.model('Message', messageSchema);

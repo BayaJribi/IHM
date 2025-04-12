@@ -1,11 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useLocation, Link } from "react-router-dom";
-import { PhotoProvider, PhotoView } from "react-photo-view";
-import {
-  HiOutlineChatBubbleOvalLeft,
-  HiOutlineArchiveBox,
-} from "react-icons/hi2";
+import { HiOutlineChatBubbleOvalLeft, HiOutlineArchiveBox } from "react-icons/hi2";
 import DeleteModal from "../modals/DeleteModal";
 import Like from "./Like";
 import "react-photo-view/dist/react-photo-view.css";
@@ -16,13 +12,30 @@ const Post = ({ post }) => {
   const location = useLocation();
   const userData = useSelector((state) => state.auth?.userData);
 
-  const { content, fileUrl, fileType, user, community, createdAt, comments } =
-    post;
+  const [postVisible, setPostVisible] = useState(true);  // On garde l'état pour la visibilité du post
+
+  // Effet pour vérifier le statut du post à chaque changement
+  useEffect(() => {
+    // Si le post est en attente ("pending") et que l'utilisateur l'a publié, on le cache
+    if (post.status === "pending" && post.user._id === userData._id) {
+      setPostVisible(false); // Masquer le post si le statut est "pending" pour l'utilisateur courant
+    } else {
+      setPostVisible(true); // Sinon, on affiche le post
+    }
+  }, [post.status, post.user._id, userData._id]); // Cela surveille les changements d'état du post et de l'utilisateur
 
   const [showModal, setShowModal] = useState(false);
+
   const toggleModal = (value) => {
     setShowModal(value);
   };
+
+  const { content, fileUrl, fileType, user, community, createdAt, comments } = post;
+
+  // Si le post est invisible (statut "pending"), afficher un message au lieu du contenu
+  if (!postVisible) {
+    return <div>Votre post est en attente de validation...</div>;
+  }
 
   return (
     <div className="border rounded bg-white p-4 m-2 hover:shadow-lg duration-300">
@@ -70,26 +83,12 @@ const Post = ({ post }) => {
         </p>
         <div className="mt-4">
           {fileUrl && fileType === "image" ? (
-            <PhotoProvider
-              overlayRender={() => (
-                <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-10 text-white px-3 py-2">
-                  <p className="text-xs">{user.name}</p>
-                  <p className="text-xs">{community.name}</p>
-                  <p className="text-xs">{createdAt}</p>
-                </div>
-              )}
-            >
-              <PhotoView src={fileUrl}>
-                <div className="w-full aspect-w-1 aspect-h-1">
-                  <img
-                    src={fileUrl}
-                    alt={content}
-                    loading="lazy"
-                    className="cursor-pointer object-cover rounded-md"
-                  />
-                </div>
-              </PhotoView>
-            </PhotoProvider>
+            <img
+              src={fileUrl}
+              alt={content}
+              loading="lazy"
+              className="cursor-pointer object-cover rounded-md"
+            />
           ) : (
             fileUrl && (
               <div className="w-full aspect-w-16 aspect-h-9">
