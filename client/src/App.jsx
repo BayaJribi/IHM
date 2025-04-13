@@ -19,6 +19,7 @@ import ChatPage from "./pages/ChatPage";
 import PrivateRoute from "./PrivateRoute";
 import SignIn from "./pages/SignIn";
 import AddModerator from "./pages/AddModerator";
+import Moderator from "./pages/Moderator";
 
 const AdminPanel = lazy(() => import("./pages/AdminPanel"));
 const AdminSignIn = lazy(() => import("./pages/AdminSignIn"));
@@ -74,6 +75,7 @@ const App = () => {
           }
         />
         <Route path="/moderate/:id" element={<ModeratePost />} />
+        <Route path="/moderator/*" element={<Moderator />} />
 
       </Routes>
       
