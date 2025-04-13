@@ -11,6 +11,7 @@ const { saveLogInfo } = require("../middlewares/logger/logInfo");
 const duration = require("dayjs/plugin/duration");
 const dayjs = require("dayjs");
 dayjs.extend(duration);
+const { faker } = require('@faker-js/faker');
 
 const LOG_TYPE = {
   SIGN_IN: "sign in",
@@ -285,24 +286,19 @@ const getUser = async (req, res, next) => {
 const addUser = async (req, res, next) => {
   let newUser;
   const hashedPassword = await bcrypt.hash(req.body.password, 10);
-  /**
-   * @type {boolean} isConsentGiven
-   */
   const isConsentGiven = JSON.parse(req.body.isConsentGiven);
 
   const defaultAvatar =
     "https://raw.githubusercontent.com/nz-m/public-files/main/dp.jpg";
   const fileUrl = req.files?.[0]?.filename
-    ? `${req.protocol}://${req.get("host")}/assets/userAvatars/${
-        req.files[0].filename
-      }`
+    ? `${req.protocol}://${req.get("host")}/assets/userAvatars/${req.files[0].filename}`
     : defaultAvatar;
 
   const emailDomain = req.body.email.split("@")[1];
   const role = emailDomain === "mod.socialecho.com" ? "moderator" : "general";
 
   newUser = new User({
-    name: req.body.name,
+    name: faker.person.fullName(), // ✅ Use generated name
     email: req.body.email,
     password: hashedPassword,
     role: role,
@@ -328,6 +324,8 @@ const addUser = async (req, res, next) => {
     });
   }
 };
+
+
 
 const logout = async (req, res) => {
   try {

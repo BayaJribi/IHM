@@ -28,10 +28,11 @@ const createPost = async (req, res) => {
       content,
       fileUrl: fileUrl || null,
       fileType: fileType || null,
-      status: "pending",
+      status: "pending", // Marquer comme "pending"
     });
 
     const savedPost = await newPost.save();
+
     const communityWithModerators = await Community.findById(communityId).populate("moderators");
     const moderators = communityWithModerators?.moderators || [];
 
@@ -53,25 +54,34 @@ const createPost = async (req, res) => {
   }
 };
 
+
 const confirmPost = async (req, res) => {
   try {
     const { confirmationToken } = req.params;
     const pendingPost = await PendingPost.findOne({ confirmationToken, status: "pending" });
+
     if (!pendingPost) return res.status(404).json({ message: "Post not found" });
 
-    const { user, community, content, fileUrl, fileType } = pendingPost;
-    const approvedPost = new Post({ user, community, content, fileUrl, fileType, status: "approved" });
+    // Mise à jour du statut du post
+    pendingPost.status = "approved"; // Le statut devient 'approved'
+    await pendingPost.save(); // Sauvegarder le post avec le nouveau statut
 
-    await PendingPost.findByIdAndDelete(pendingPost._id);
-    const savedPost = await approvedPost.save();
+    // Retourner le post mis à jour
+    const post = await Post.findById(pendingPost._id)
+      .populate("user", "name avatar")
+      .populate("community", "name")
+      .lean();
 
-    const post = await Post.findById(savedPost._id).populate("user", "name avatar").populate("community", "name").lean();
-    post.createdAt = dayjs(post.createdAt).fromNow();
-    res.json(post);
+    post.createdAt = dayjs(post.createdAt).fromNow(); // Formater la date
+    res.json(post); // Retourner le post confirmé
   } catch (error) {
     res.status(500).json({ message: "Error confirming post" });
   }
 };
+
+
+
+
 
 const rejectPost = async (req, res) => {
   try {
@@ -178,7 +188,14 @@ const getPosts = async (req, res) => {
       .populate("community", "name")
       .lean();
 
-    const formattedPosts = posts.map((post) => ({ ...post, createdAt: dayjs(post.createdAt).fromNow() }));
+    const formattedPosts = posts.map((post) => {
+      // Si le post est en attente et que c'est l'utilisateur qui l'a soumis, on cache le contenu
+      if (post.status === "pending" && post.user._id.toString() === userId) {
+        post.content = "Votre post est en attente de validation"; // Message visible seulement pour l'utilisateur
+      }
+      return { ...post, createdAt: dayjs(post.createdAt).fromNow() };
+    });
+
     const totalPosts = await Post.countDocuments({ community: { $in: communityIds }, status: "approved" });
 
     res.status(200).json({ formattedPosts, totalPosts });
@@ -186,6 +203,7 @@ const getPosts = async (req, res) => {
     res.status(500).json({ message: "Error retrieving posts" });
   }
 };
+
 
 
 /**
