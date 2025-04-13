@@ -93,7 +93,7 @@ const AddModerator = ({ onBack }) => { // Added onBack prop
             >
               <FiArrowLeft className="h-5 w-5" />
             </button>
-            <h2 className="text-2xl font-bold text-gray-800">Add New Moderator</h2>
+            <h2 className="text-2xl font-bold text-gray-800">Add New Moderator</h2><h6>@mod.socialecho.com</h6>
           </div>
           
           <form onSubmit={handleSubmit} className="space-y-6">

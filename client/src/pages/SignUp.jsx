@@ -186,40 +186,7 @@ const SignUpNew = () => {
 
             <form onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                <div className="relative">
-                  <label htmlFor="name" className="mb-2 block text-sm font-medium text-gray-700">
-                    Username
-                  </label>
-                  <div className="relative">
-                    <span className="absolute inset-y-0 left-0 flex items-center pl-3">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="h-5 w-5 text-gray-400"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                      </svg>
-                    </span>
-                    <input
-                      id="name"
-                      name="name"
-                      type="text"
-                      value={name}
-                      onChange={handleNameChange}
-                      className="block w-full rounded-lg border border-gray-300 bg-white px-10 py-3 text-gray-700 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-50"
-                      placeholder="Choose a username"
-                      required
-                      autoComplete="off"
-                    />
-                  </div>
-                </div>
+              
                 
                 <div className="relative">
                   <label htmlFor="email" className="mb-2 block text-sm font-medium text-gray-700">
@@ -360,18 +327,7 @@ const SignUpNew = () => {
                 </div>
               </div>
               
-              <div 
-                className={`mt-6 mb-6 cursor-pointer rounded-lg border px-4 py-3 text-center text-sm font-medium transition-colors ${
-                  isConsentGiven && !isModerator 
-                    ? "border-green-500 bg-green-50 text-green-600" 
-                    : "border-gray-300 hover:border-blue-400"
-                }`}
-                onClick={() => setIsModalOpen(true)}
-              >
-                {isConsentGiven && !isModerator 
-                  ? "Context-Based Authentication is enabled" 
-                  : "Click to enable Context-Based Authentication"}
-              </div>
+              
               
               <button
                 disabled={loading}
@@ -398,15 +354,7 @@ const SignUpNew = () => {
             </form>
             
             <div className="mt-8 flex items-center justify-center space-x-6 text-sm text-gray-600">
-              <a
-                href="https://github.com/nz-m/SocialEcho"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center hover:text-blue-600"
-              >
-                <AiFillGithub className="mr-2 h-5 w-5" />
-                <span>GitHub</span>
-              </a>
+             
               <Link
                 to="/admin"
                 className="flex items-center hover:text-blue-600"

@@ -136,7 +136,7 @@ const ModeratorsList = () => {
                     <div className="flex items-center justify-between px-6 py-4">
                       <div className="flex items-center gap-4">
                         <div className="w-10 h-10 bg-blue-50 rounded-full flex items-center justify-center text-lg font-semibold text-blue-600 flex-shrink-0">
-                          {moderator.name.charAt(0).toUpperCase()}
+                        {moderator.name.charAt(0).toUpperCase()}
                         </div>
                         <div className="min-w-0">
                           <h3 className="text-base font-medium text-gray-900">
@@ -145,6 +145,7 @@ const ModeratorsList = () => {
                           <p className="text-sm text-gray-500">
                             {moderator.email || "No email provided"}
                           </p>
+                          
                         </div>
                       </div>
 
@@ -160,13 +161,7 @@ const ModeratorsList = () => {
                             </div>
                           )}
                         </div>
-                        <button
-                          onClick={() => handleDeleteModerator(moderator._id, moderator.name)}
-                          className="ml-4 flex items-center justify-center gap-2 px-3 py-2 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-md transition-colors"
-                        >
-                          <FiTrash2 className="w-4 h-4" />
-                          <span className="hidden sm:inline">Remove</span>
-                        </button>
+                        
                       </div>
                     </div>
                   </li>

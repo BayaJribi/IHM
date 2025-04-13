@@ -6,9 +6,12 @@ import { logoutAction } from "../../redux/actions/authActions";
 import { IoLogOutOutline } from "react-icons/io5";
 import { Transition } from "@headlessui/react";
 import { HiOutlineHome } from "react-icons/hi2";
+import { FaFacebookMessenger, FaTelegramPlane } from "react-icons/fa";  // Import the messenger icon
 import Logo from "../../assets/SocialEcho.png";
 import NotificationDropdown from "./NotificationDropdown";
 import CurrentTime from "./CurrentTime";
+import { BiLogoMessenger } from "react-icons/bi";
+import { BsMessenger } from "react-icons/bs";
 
 const Navbar = ({ userData }) => {
   const dispatch = useDispatch();
@@ -57,6 +60,14 @@ const Navbar = ({ userData }) => {
         {userData?.role === "moderator" && (
           <NotificationDropdown userId={userData._id} />
         )}
+
+        {/* Messenger Icon */}
+        <Link
+          to="http://localhost:3000/chat"
+          className="flex items-center justify-center text-2xl text-primary ml-4"
+        >
+          <BsMessenger />
+        </Link>
       </div>
 
       {/* Dropdown utilisateur */}
@@ -120,9 +131,7 @@ const Navbar = ({ userData }) => {
                     onClick={logout}
                     disabled={loggingOut}
                   >
-                    {loggingOut ? "Logging out..." : <>
-                      Logout <IoLogOutOutline />
-                    </>}
+                    {loggingOut ? "Logging out..." : <><IoLogOutOutline /> Logout</>}
                   </button>
                 </div>
               </div>

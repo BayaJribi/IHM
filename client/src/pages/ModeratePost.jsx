@@ -39,6 +39,29 @@ const ModeratePost = () => {
     <div className="p-4">
       <h2 className="text-xl font-semibold">Modération du Post</h2>
       <p className="mt-2">{post.content}</p>
+      
+      {/* Ajout de l'affichage de l'image ou de la vidéo */}
+      <div className="mt-4">
+        {post.fileUrl && post.fileType === "image" ? (
+          <img
+            src={post.fileUrl}
+            alt={post.content}
+            loading="lazy"
+            className="cursor-pointer object-cover rounded-md max-w-full h-auto"
+          />
+        ) : (
+          post.fileUrl && (
+            <div className="w-full aspect-w-16 aspect-h-9">
+              <video
+                className="block mx-auto rounded-md focus:outline-none max-w-full h-auto"
+                src={post.fileUrl}
+                controls
+              />
+            </div>
+          )
+        )}
+      </div>
+      
       <div className="mt-4 flex gap-4">
         <button onClick={handleAccept} className="bg-green-500 text-white px-4 py-2 rounded">
           ✅ Accepter

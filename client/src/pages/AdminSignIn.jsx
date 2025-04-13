@@ -203,15 +203,7 @@ const AdminSignIn = () => {
                 <span>Back to home</span>
               </Link>
               
-              <a
-                href="https://github.com/nz-m/SocialEcho"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center text-sm text-gray-600 hover:text-indigo-600"
-              >
-                <AiFillGithub className="mr-2 h-5 w-5" />
-                <span>GitHub</span>
-              </a>
+              
             </div>
           </div>
         </div>

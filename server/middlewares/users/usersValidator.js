@@ -4,22 +4,7 @@ const path = require("path");
 const fs = require("fs");
 
 const addUserValidator = [
-  check("name")
-    .isLength({ min: 1 })
-    .withMessage("Name is required")
-    .isAlpha("en-US", { ignore: " -" })
-    .withMessage("Name must not contain anything other than alphabet")
-    .custom((value, { req }) => {
-      switch (true) {
-        case value.length === 1:
-          throw new Error("Name must be at least 2 characters long");
-        case value.length > 20:
-          throw new Error("Name cannot be more than 20 characters long");
-        default:
-          return true;
-      }
-    })
-    .trim(),
+
   check("email")
     .isEmail()
     .withMessage("Invalid email address")

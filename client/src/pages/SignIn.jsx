@@ -237,15 +237,7 @@ const SignIn = () => {
             </div>
 
             <div className="mt-8 flex items-center justify-center space-x-6 text-sm text-gray-600">
-              <a
-                href="https://github.com/nz-m/SocialEcho"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center hover:text-blue-600"
-              >
-                <AiFillGithub className="mr-2 h-5 w-5" />
-                <span>GitHub</span>
-              </a>
+             
               <Link
                 to="/admin"
                 className="flex items-center hover:text-blue-600"
