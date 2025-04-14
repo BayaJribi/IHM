@@ -78,12 +78,8 @@ const UserProfile = ({ userData }) => {
 
   // Show debug info about the available user data
   const showDebugInfo = () => (
-    <div className="bg-gray-100 p-3 rounded-lg mb-4 text-xs">
-      <h4 className="font-bold mb-1">Debug Info</h4>
-      <p>User data available from Redux: {Object.keys(user || {}).length > 0 ? "Yes" : "No"}</p>
-      <p>Auth user data available: {Object.keys(authUserData || {}).length > 0 ? "Yes" : "No"}</p>
-      <p>User ID from props: {userData?._id || "Not provided"}</p>
-      <p>Available user properties: {Object.keys(mergedUser || {}).join(", ")}</p>
+    <div className="bg-white-100 p-3 rounded-lg mb-4 text-xs">
+     
     </div>
   );
 
@@ -91,7 +87,7 @@ const UserProfile = ({ userData }) => {
     <>
       {showDebugInfo()}
       <OwnProfileCard user={mergedUser} />
-      <OwnInfoCard user={mergedUser} />
+      {/* <OwnInfoCard user={mergedUser} /> 
 
       <h3 className="font-semibold text-center mb-4 text-gray-700 p-3 border-b">
         Your most recent posts
@@ -112,7 +108,7 @@ const UserProfile = ({ userData }) => {
         posts.map((post) => (
           <MemoizedPostOnProfile key={post._id} post={post} />
         ))
-      )}
+      )}*/}
     </>
   );
 };

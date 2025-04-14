@@ -173,7 +173,7 @@ const Rightbar = () => {
 
       <hr className="my-4" />
 
-      {/* Users Section */}
+      {/* Users Section 
       <div className="mb-4">
         <div className="flex items-center justify-between mb-4">
           <h5 className="text-sm font-semibold uppercase text-gray-600">Popular Users to Follow</h5>
@@ -238,7 +238,7 @@ const Rightbar = () => {
               </li>
             ))}
         </ul>
-      </div>
+      </div>*/}
       
       {/* Footer */}
       <div className="text-xs text-gray-400 mt-6">

@@ -44,14 +44,7 @@ const Leftbar = ({ showLeftbar }) => {
     { href: "/saved", label: "Saved", icon: <HiOutlineTag className="text-xl" /> },
   ];
 
-  // Add following link if user has general role
-  if (user && user.role === "general") {
-    navigationLinks.push({
-      href: "/following",
-      label: "Following",
-      icon: <HiOutlineRectangleStack className="text-xl" />
-    });
-  }
+  
 
   // Check if the current route matches the link
   const isActive = (path) => {
